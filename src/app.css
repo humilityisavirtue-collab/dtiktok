@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+
+:root {
+	--bg-dark: #000000;
+	--bg-card: #111111;
+	--text-primary: #ffffff;
+	--text-secondary: #888888;
+	--accent: #ff2d55;
+	--hearts: #ff6b6b;
+	--spades: #4ecdc4;
+	--diamonds: #ffe66d;
+	--clubs: #95e1a3;
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background: var(--bg-dark);
+	color: var(--text-primary);
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	overflow: hidden;
+	-webkit-tap-highlight-color: transparent;
+	user-select: none;
+}
+
+/* Hide scrollbar but allow scroll */
+::-webkit-scrollbar {
+	display: none;
+}
+
+* {
+	scrollbar-width: none;
+}
+
+/* Suit colors */
+.suit-hearts { color: var(--hearts); }
+.suit-spades { color: var(--spades); }
+.suit-diamonds { color: var(--diamonds); }
+.suit-clubs { color: var(--clubs); }
+
+.bg-hearts { background: var(--hearts); }
+.bg-spades { background: var(--spades); }
+.bg-diamonds { background: var(--diamonds); }
+.bg-clubs { background: var(--clubs); }
