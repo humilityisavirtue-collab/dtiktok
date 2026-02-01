@@ -5,11 +5,13 @@
 
 	interface Props {
 		videos: Video[];
+		onNearEnd?: () => void;
 	}
 
-	let { videos }: Props = $props();
+	let { videos, onNearEnd }: Props = $props();
 
 	let currentIndex = $state(0);
+	let loadMoreTriggered = false;
 	let containerEl: HTMLDivElement;
 
 	// Touch handling for swipe
@@ -37,6 +39,7 @@
 			// Swipe up - next video
 			currentIndex++;
 			markWatched(videos[currentIndex].id);
+			checkNearEnd();
 		} else if (touchDeltaY > threshold && currentIndex > 0) {
 			// Swipe down - previous video
 			currentIndex--;
@@ -52,6 +55,7 @@
 			if (currentIndex < videos.length - 1) {
 				currentIndex++;
 				markWatched(videos[currentIndex].id);
+				checkNearEnd();
 			}
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
@@ -71,11 +75,27 @@
 			if (e.deltaY > 0 && currentIndex < videos.length - 1) {
 				currentIndex++;
 				markWatched(videos[currentIndex].id);
+				checkNearEnd();
 			} else if (e.deltaY < 0 && currentIndex > 0) {
 				currentIndex--;
 			}
 		}, 50);
 	}
+
+	// Check if we're near the end and need more videos
+	function checkNearEnd() {
+		if (!loadMoreTriggered && currentIndex >= videos.length - 5) {
+			loadMoreTriggered = true;
+			onNearEnd?.();
+		}
+	}
+
+	// Reset trigger when new videos are added
+	$effect(() => {
+		if (videos.length > 0 && currentIndex < videos.length - 10) {
+			loadMoreTriggered = false;
+		}
+	});
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

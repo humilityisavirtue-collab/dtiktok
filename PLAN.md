@@ -45,7 +45,7 @@ User sets their feed balance with suit sliders:
 - [x] VideoPlayer component
 - [x] VideoFeed with swipe
 - [x] Main page with loading states
-- [ ] Settings page with sliders
+- [x] Settings page with sliders
 - [ ] More Archive.org content
 - [ ] IPFS upload
 - [ ] Nostr integration

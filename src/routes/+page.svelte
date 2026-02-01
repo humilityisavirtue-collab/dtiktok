@@ -7,6 +7,7 @@
 
 	let videos = $state<Video[]>([]);
 	let loading = $state(true);
+	let loadingMore = $state(false);
 	let error = $state('');
 
 	onMount(async () => {
@@ -35,6 +36,26 @@
 			loading = false;
 		}
 	});
+
+	async function loadMoreVideos() {
+		if (loadingMore) return;
+		loadingMore = true;
+
+		try {
+			const moreVideos = await getBootstrapVideos(20);
+			const prefs = getPreferences();
+			const routed = routeVideos(moreVideos, prefs);
+
+			// Merge, avoiding duplicates
+			const existingIds = new Set(videos.map(v => v.id));
+			const newVideos = routed.filter(v => !existingIds.has(v.id));
+			videos = [...videos, ...newVideos];
+		} catch (e) {
+			console.error('Failed to load more videos:', e);
+		} finally {
+			loadingMore = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -53,7 +74,13 @@
 		<button onclick={() => location.reload()}>Retry</button>
 	</div>
 {:else if videos.length > 0}
-	<VideoFeed {videos} />
+	<VideoFeed {videos} onNearEnd={loadMoreVideos} />
+
+	{#if loadingMore}
+		<div class="loading-more">
+			<div class="loader small"></div>
+		</div>
+	{/if}
 
 	<!-- Settings button -->
 	<a href="/settings" class="settings-btn">
@@ -116,5 +143,19 @@
 		align-items: center;
 		justify-content: center;
 		z-index: 100;
+	}
+
+	.loading-more {
+		position: fixed;
+		bottom: 80px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 100;
+	}
+
+	.loader.small {
+		width: 24px;
+		height: 24px;
+		border-width: 2px;
 	}
 </style>
